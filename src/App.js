@@ -1,13 +1,40 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import "./App.css";
+import axios from 'axios';
+
+import Header from './Header';
+import Photo from './Photo';
+
+const API_KEY = 'DEMO_KEY';
 
 function App() {
+  const [img, setImg] = useState(null);
+  const [imgTitle, setImgTitle] = useState("");
+  const [aboutImg, setAboutImg] = useState("");
+
+  useEffect(() => {
+    axios.get(`https://api.nasa.gov/planetary/apod?api_key=${API_KEY}&thumbs=True&date=2020-02-01`)
+      .then(res => {
+        setImg(res.data.url);
+        setImgTitle(res.data.title);
+        setAboutImg(res.data.explanation);
+      })
+      .catch(err => console.error(err));
+  }, [])
+
+  // this is the object we receive in .data:
+    // copyright: "Hawk Wolinski"
+    // date: "2022-02-16"
+    // explanation: "What's that on the Sun? Although it may look like a flowing version of the Eiffel Tower, it is a solar prominence that is actually much bigger -- about the height of Jupiter. The huge prominence emerged about ten days ago, hovered over the Sun's surface for about two days, and then erupted -- throwing a coronal mass ejection (CME) into the Solar System. The featured video, captured from the astrophotographer's backyard in Hendersonville, Tennessee, USA, shows an hour time-lapse played both forwards and backwards. That CME did not impact the Earth, but our Sun had unleashed  other recent CMEs that not only triggered Earthly auroras, but puffed out the Earth's atmosphere enough to cause just-launched Starlink satellites to fall back. Activity on the Sun, including sunspots, prominences, CMEs and flares, continues to increase as the Sun evolves away from a deep minimum in its 11-year magnetic cycle.   Birthday Surprise: What picture did APOD feature on your birthday? (post 1995)"
+    // media_type: "video"
+    // service_version: "v1"
+    // title: "Eiffel Tower Prominence on the Sun"
+    // url: "https://www.youtube.com/embed/liapnqj9GDc?rel=0"
+
   return (
     <div className="App">
-      <p>
-        Read through the instructions in the README.md file to build your NASA
-        app! Have fun <span role="img" aria-label='go!'>🚀</span>!
-      </p>
+      <Header />
+      <Photo img={img} imgTitle={imgTitle} aboutImg={aboutImg} />
     </div>
   );
 }
